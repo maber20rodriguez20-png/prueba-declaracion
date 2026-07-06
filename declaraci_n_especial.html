@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tengo algo que decirte...</title>
+    <!-- Incluimos Tailwind CSS para los estilos -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Incluimos Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #fffde7 0%, #ffb300 100%); /* Colores dorados tipo miel */
+            min-height: 100vh;
+            overflow: hidden; /* Para evitar scroll con la animación de corazones */
+        }
+        
+        .titulo-romantico {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        /* Animación para el contenedor principal */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .tarjeta {
+            animation: float 6s ease-in-out infinite;
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.85);
+        }
+
+        /* Estilo base para el botón NO para poder moverlo de forma absoluta después */
+        #btn-no {
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        /* Animación para los corazones de fondo */
+        .heart-bg {
+            position: absolute;
+            top: -20px;
+            color: rgba(255, 105, 180, 0.4);
+            font-size: 20px;
+            animation: fall linear forwards;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(105vh) rotate(360deg);
+            }
+        }
+
+        /* Ocultar el mensaje de éxito inicialmente */
+        #mensaje-exito {
+            display: none;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center relative">
+
+    <!-- Contenedor principal de corazones y miel -->
+    <div id="heart-container" class="absolute inset-0 overflow-hidden pointer-events-none"></div>
+
+    <!-- Pantalla Inicial -->
+    <div id="pantalla-pregunta" class="tarjeta max-w-md w-full mx-4 rounded-3xl shadow-2xl p-8 text-center relative z-10 border border-yellow-400/50">
+        
+        <!-- Emojis Decorativos -->
+        <div class="mb-6 flex justify-center text-5xl animate-bounce">
+            🐻🍯
+        </div>
+
+        <!-- Mensaje -->
+        <h1 class="titulo-romantico text-4xl md:text-5xl text-yellow-900 mb-4 tracking-wide">
+            Hola, Kiara...
+        </h1>
+        
+        <p class="text-yellow-800 text-lg mb-8 leading-relaxed font-semibold px-2">
+            Desde aquel mágico 7 de mayo en que te conocí, cada momento que hemos compartido se ha vuelto inolvidable. La calidez del tiempo a tu lado me hace sentir que esto que tenemos es tan inmenso e infinito como el mismo universo.<br><br>
+            Llevo mucho tiempo guardando estas palabras en mi corazón, y hoy, por fin, quiero hacerte esta pregunta a ti, Kiara Injante Melendez...<br><br>
+            <span class="text-3xl text-red-600 font-bold block mt-4 animate-pulse">¿Quieres ser mi novia?</span>
+        </p>
+
+        <!-- Botones -->
+        <div class="flex justify-center items-center gap-4 h-16">
+            <button id="btn-si" class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transform transition hover:scale-110 active:scale-95 text-lg w-32">
+                ¡Sí! 💛
+            </button>
+            <button id="btn-no" class="bg-yellow-200 hover:bg-yellow-400 text-yellow-900 font-bold py-3 px-8 rounded-full shadow transition text-lg w-32">
+                No
+            </button>
+        </div>
+    </div>
+
+    <!-- Pantalla de Éxito (Oculta al inicio) -->
+    <div id="mensaje-exito" class="tarjeta max-w-md w-full mx-4 rounded-3xl shadow-2xl p-8 text-center relative z-10 border border-yellow-400/50">
+        <div class="mb-4 text-6xl">
+            🥰🎈
+        </div>
+        <h2 class="titulo-romantico text-4xl text-red-600 mb-4">
+            ¡Sabía que dirías que sí!
+        </h2>
+        <p class="text-yellow-900 text-lg font-semibold">
+            ¡Eres mi tarrito de miel favorito! 🍯<br>
+            ¡Te quiero muchísimo, como Pooh quiere a la miel! 🐻💛
+        </p>
+    </div>
+
+    <script>
+        // Variables principales
+        const btnSi = document.getElementById('btn-si');
+        const btnNo = document.getElementById('btn-no');
+        const pantallaPregunta = document.getElementById('pantalla-pregunta');
+        const mensajeExito = document.getElementById('mensaje-exito');
+        const heartContainer = document.getElementById('heart-container');
+
+        // Función para mover el botón "No"
+        function esquivarBoton() {
+            // Cambiamos a posición absoluta para moverlo libremente
+            btnNo.style.position = 'absolute';
+            
+            // Calculamos límites para que no se salga de la tarjeta
+            const cardRect = pantallaPregunta.getBoundingClientRect();
+            const btnRect = btnNo.getBoundingClientRect();
+            
+            // Calculamos nuevas coordenadas aleatorias dentro del contenedor
+            // Restamos padding y márgenes por seguridad
+            const maxX = cardRect.width - btnRect.width - 40; 
+            const maxY = cardRect.height - btnRect.height - 40;
+
+            const randomX = Math.floor(Math.random() * maxX) + 20;
+            const randomY = Math.floor(Math.random() * maxY) + 20;
+
+            btnNo.style.left = `${randomX}px`;
+            btnNo.style.top = `${randomY}px`;
+        }
+
+        // Eventos para dispositivos móviles (touch) y desktop (hover)
+        btnNo.addEventListener('mouseover', esquivarBoton);
+        btnNo.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // Previene el click en móviles
+            esquivarBoton();
+        });
+
+        // Función cuando dice que Sí
+        btnSi.addEventListener('click', () => {
+            // Ocultamos pregunta, mostramos celebración
+            pantallaPregunta.style.display = 'none';
+            mensajeExito.style.display = 'block';
+            
+            // Intensificamos la lluvia de corazones
+            lluviaDeCorazones(50);
+        });
+
+        // Función para crear la lluvia de elementos de fondo
+        function crearCorazon() {
+            const corazon = document.createElement('div');
+            corazon.classList.add('heart-bg');
+            
+            // Array con emojis del Bosque de los Cien Acres
+            const emojisPooh = ['🍯', '🐝', '💛', '🐻', '🎈', '🌻'];
+            const emojiAleatorio = emojisPooh[Math.floor(Math.random() * emojisPooh.length)];
+            corazon.innerHTML = emojiAleatorio;
+            
+            // Posición horizontal aleatoria
+            corazon.style.left = Math.random() * 100 + 'vw';
+            
+            // Tamaño aleatorio
+            const size = Math.random() * 20 + 10;
+            corazon.style.fontSize = `${size}px`;
+            
+            // Duración de la animación aleatoria
+            const duration = Math.random() * 3 + 2; // entre 2 y 5 segundos
+            corazon.style.animationDuration = `${duration}s`;
+            
+            // Opacidad aleatoria
+            corazon.style.opacity = Math.random() * 0.5 + 0.3;
+
+            heartContainer.appendChild(corazon);
+
+            // Eliminar el corazón del DOM cuando termina la animación
+            setTimeout(() => {
+                corazon.remove();
+            }, duration * 1000);
+        }
+
+        // Iniciar lluvia ligera constante
+        setInterval(crearCorazon, 300);
+
+        // Función para lluvia intensa (cuando dice Sí)
+        function lluviaDeCorazones(cantidad) {
+            for (let i = 0; i < cantidad; i++) {
+                setTimeout(crearCorazon, i * 50);
+            }
+        }
+    </script>
+</body>
+</html>
